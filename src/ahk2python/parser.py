@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 import re  # For modifier parsing
+from pathlib import Path  # For read .ahk files
 
 
 class LineType(Enum):
@@ -19,7 +20,9 @@ class AHKLine:
 
 
 def parse_hotkeys(line: str) -> tuple[str | None, str | None]:
-    """Parse hotkey/hotstring: trigger (incl. modifiers), replacement."""
+    """
+    Parse hotkey/hotstring: trigger (including modifiers), replacement.
+    """
     line = line.strip()
     if not line or line.startswith(";"):
         return None, None
@@ -52,9 +55,17 @@ def classify_line(line: str) -> AHKLine:
     return AHKLine(raw=line, line_type=LineType.UNKNOWN, data={})
 
 
-# Fixed main loop
-with open("test_script.ahk", "r") as file:
-    for line in file:
-        parsed = parse_hotkeys(line)
-        if parsed[0] is not None:
-            print(parsed)  # Only print valid hotkeys/hotstrings
+def main(file: str = "test.ahk") -> None:
+    content = Path(file).read_text(encoding="utf-8")
+    # New method of reading file, recently saw
+    # Works good
+    for line in content.splitlines():  # splitting lines to...
+        # avoid issues with spaces
+        # Parsing a file to take all lines
+        trigger, replacement = parse_hotkeys(line)
+        if trigger is not None and replacement is not None:
+            print(f" Trigger: {trigger} -> Replacement: {replacement}")
+
+
+if __name__ == "__main__":
+    main("test_script.ahk")
