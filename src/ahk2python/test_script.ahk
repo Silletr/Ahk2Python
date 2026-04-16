@@ -1,5 +1,4 @@
-^j::Send, Hello World
+#j::Send, Hello World
 
 ; Hey there
-ae::ä
-ue::ü
+#w::Send, Bye-Bye World, I'm hacking Pentagon

@@ -4,6 +4,9 @@ import re  # For modifier parsing
 from pathlib import Path  # For read .ahk files
 
 
+#    ╭───────────────────────────────────────────────────╮
+#    │     Dividing line classes and types               │
+#    ╰───────────────────────────────────────────────────╯
 class LineType(Enum):
     HOTSTRING = "hotstring"  # ::ae::ä
     HOTKEY = "hotkey"  # ^j::Send, text
@@ -44,7 +47,10 @@ def classify_line(line: str) -> AHKLine:
     if stripped.startswith(";"):
         return AHKLine(raw=line, line_type=LineType.COMMENT, data={})
 
-    # Check for :: pattern (both hotkeys/hotstrings)
+    #    ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    #    ┃    Check for :: pattern (both hotkeys/hotstrings)    ┃
+    #    ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
     if "::" in stripped:
         # Quick type check: hotkeys have modifiers before first ::
         if re.match(r"^[^:]+::", stripped):
@@ -57,8 +63,9 @@ def classify_line(line: str) -> AHKLine:
 
 def main(file: str = "test.ahk") -> None:
     content = Path(file).read_text(encoding="utf-8")
-    # New method of reading file, recently saw
-    # Works good
+    #  ───── New method of reading file, recently saw ─────
+    #  ──────────────────── Works good ────────────────────
+
     for line in content.splitlines():  # splitting lines to...
         # avoid issues with spaces
         # Parsing a file to take all lines
